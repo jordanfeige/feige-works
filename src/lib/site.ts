@@ -15,7 +15,7 @@ export const FOUNDER = {
   name: "Jordan Feige",
   role: "Founder",
   linkedin: "https://linkedin.com/in/jordan-feige",
-  email: "jordanfeige@gmail.com",
+  email: "hello@feigeworks.com",
 } as const;
 
 export type ProductStatus = "in-beta" | "building" | "testing";
