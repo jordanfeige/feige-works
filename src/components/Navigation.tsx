@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/cn";
+import { FOUNDER } from "@/lib/site";
 
 const links = [
   { href: "#products", label: "Products" },
@@ -30,7 +31,11 @@ export function Navigation() {
   return (
     <header className={cn("nav-shell", scrolled && "is-scrolled")}>
       <div className="container flex h-16 items-center justify-between md:h-[4.25rem]">
-        <a href="#top" aria-label="Feige Works home" onClick={() => setOpen(false)}>
+        <a
+          href="#top"
+          aria-label="Feige Works home"
+          onClick={() => setOpen(false)}
+        >
           <Logo />
         </a>
 
@@ -44,7 +49,7 @@ export function Navigation() {
               {link.label}
             </a>
           ))}
-          <a href="#contact" className="link-arrow text-sm">
+          <a href={`mailto:${FOUNDER.email}`} className="link-arrow text-sm">
             Get in touch →
           </a>
         </nav>
@@ -101,7 +106,7 @@ export function Navigation() {
             </a>
           ))}
           <a
-            href="#contact"
+            href={`mailto:${FOUNDER.email}`}
             className="rounded-xl px-3 py-3 text-base text-ink"
             onClick={() => setOpen(false)}
           >

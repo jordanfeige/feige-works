@@ -5,7 +5,7 @@ import { SectionLabel } from "@/components/SectionLabel";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pb-16 pt-10 md:pb-24 md:pt-16">
+    <section className="relative overflow-hidden pb-10 pt-10 md:pb-12 md:pt-16">
       <div className="container relative grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <Reveal eager>
           <SectionLabel>Independent product studio</SectionLabel>

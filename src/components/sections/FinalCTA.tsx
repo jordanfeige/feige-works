@@ -5,9 +5,9 @@ import { FOUNDER } from "@/lib/site";
 export function FinalCTA() {
   return (
     <section id="contact" className="scroll-mt-24 bg-ink">
-      <div className="container py-20 md:py-28">
+      <div className="container py-16 md:py-20">
         <Reveal>
-          <h2 className="display max-w-[14ch] text-[clamp(2.2rem,5.5vw,3.8rem)] text-light">
+          <h2 className="display max-w-[14ch] text-[clamp(2rem,4.5vw,3.2rem)] text-light">
             Have an interesting{" "}
             <span className="text-accent">problem?</span>
           </h2>

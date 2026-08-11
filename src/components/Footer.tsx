@@ -19,18 +19,14 @@ export function Footer() {
           <ul className="mt-4 space-y-2">
             {PRODUCTS.map((product) => (
               <li key={product.id}>
-                {product.href ? (
-                  <a
-                    href={product.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-white/70 transition-colors hover:text-accent"
-                  >
-                    {product.name}
-                  </a>
-                ) : (
-                  <span className="text-sm text-white/45">{product.name}</span>
-                )}
+                <a
+                  href={product.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-white/70 transition-colors hover:text-accent"
+                >
+                  {product.name}
+                </a>
               </li>
             ))}
           </ul>
