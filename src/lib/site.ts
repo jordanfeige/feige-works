@@ -1,8 +1,15 @@
+/**
+ * Canonical production origin for Open Graph / link previews.
+ * Never a Vercel preview or deployment URL — crawlers should unfurl feigeworks.com.
+ */
 export const SITE_NAME = "Feige Works";
 export const SITE_URL = "https://feigeworks.com";
 export const SITE_TAGLINE = "We build products worth using.";
 export const SITE_DESCRIPTION =
   "Feige Works is an independent product studio exploring what happens when thoughtful product design meets AI.";
+
+export const OG_IMAGE_PATH = "/opengraph-image";
+export const OG_IMAGE_URL = `${SITE_URL}${OG_IMAGE_PATH}`;
 
 export const FOUNDER = {
   name: "Jordan Feige",
