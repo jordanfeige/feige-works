@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { PRODUCTS, type Product } from "@/lib/site";
 import { DrivewayVisual } from "@/components/visuals/DrivewayVisual";
@@ -13,33 +13,30 @@ const visuals = {
   wandrai: WandrAIVisual,
 } as const;
 
-/** Depth slots: 0 = back, 1 = mid, 2 = front — fanned so all three stay discoverable */
-const DEPTH_STYLES = [
-  "left-[0%] top-[0%] w-[70%] -rotate-[7deg] scale-[0.93]",
-  "left-[14%] top-[14%] w-[70%] rotate-[4deg] scale-[0.97]",
-  "left-[28%] top-[28%] w-[70%] -rotate-[1.5deg] scale-100",
-] as const;
-
-function depthFor(productId: Product["id"], focusedId: Product["id"]) {
-  if (productId === focusedId) return 2;
-
-  const others = PRODUCTS.map((product) => product.id).filter(
-    (id) => id !== focusedId,
-  );
-  return others.indexOf(productId) === 0 ? 0 : 1;
-}
+/**
+ * Fixed home slots — cards never teleport between positions on hover.
+ * That avoids the classic stack thrash (hover → move → leave → flicker).
+ */
+const HOME: Record<
+  Product["id"],
+  { className: string; baseZ: number }
+> = {
+  driveway: {
+    className: "left-[0%] top-[0%] w-[70%] -rotate-[7deg]",
+    baseZ: 1,
+  },
+  playvia: {
+    className: "left-[14%] top-[14%] w-[70%] rotate-[4deg]",
+    baseZ: 2,
+  },
+  wandrai: {
+    className: "left-[28%] top-[28%] w-[70%] -rotate-[1.5deg]",
+    baseZ: 3,
+  },
+};
 
 export function HeroComposition() {
   const [focusedId, setFocusedId] = useState<Product["id"]>("wandrai");
-
-  const cards = useMemo(
-    () =>
-      PRODUCTS.map((product) => ({
-        product,
-        depth: depthFor(product.id, focusedId),
-      })),
-    [focusedId],
-  );
 
   return (
     <div
@@ -47,10 +44,14 @@ export function HeroComposition() {
       aria-label="Featured products: Driveway, Playvia, and WandrAI"
     >
       {/* Desktop / tablet layered stack */}
-      <div className="relative hidden h-[420px] w-full sm:block lg:h-[460px]">
-        {cards.map(({ product, depth }) => {
+      <div
+        className="relative hidden h-[420px] w-full sm:block lg:h-[460px]"
+        onMouseLeave={() => setFocusedId("wandrai")}
+      >
+        {PRODUCTS.map((product) => {
           const Visual = visuals[product.id];
-          const isFront = depth === 2;
+          const home = HOME[product.id];
+          const isFront = product.id === focusedId;
 
           return (
             <a
@@ -59,28 +60,24 @@ export function HeroComposition() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Explore ${product.name}`}
-              onMouseEnter={() => setFocusedId(product.id)}
-              onFocus={() => setFocusedId(product.id)}
+              aria-current={isFront ? "true" : undefined}
               onPointerEnter={() => setFocusedId(product.id)}
+              onFocus={() => setFocusedId(product.id)}
               className={cn(
-                "absolute block origin-center transition-[transform,box-shadow,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]",
-                DEPTH_STYLES[depth],
+                "absolute block w-[70%] origin-center will-change-transform",
+                "transition-[transform,box-shadow,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                home.className,
                 isFront
-                  ? "z-30 translate-y-0 opacity-100"
-                  : depth === 1
-                    ? "z-20 opacity-95"
-                    : "z-10 opacity-90",
-                isFront && "hover:-translate-y-1.5",
-                // Keep peeking edges hittable above lower cards
-                !isFront && "[&:hover]:z-40",
+                  ? "-translate-y-1.5 scale-[1.02] opacity-100"
+                  : "translate-y-0 scale-[0.97] opacity-90",
               )}
-              style={{ zIndex: isFront ? 30 : 10 + depth }}
+              style={{ zIndex: isFront ? 40 : home.baseZ }}
             >
               <div
                 className={cn(
-                  "surface-card overflow-hidden p-3 transition-[box-shadow,transform] duration-200",
+                  "surface-card overflow-hidden p-3 transition-shadow duration-200",
                   isFront
-                    ? "shadow-[0_22px_60px_rgba(15,23,42,0.14)]"
+                    ? "shadow-[0_24px_60px_rgba(15,23,42,0.16)]"
                     : "shadow-[0_12px_36px_rgba(15,23,42,0.08)]",
                 )}
               >
@@ -111,7 +108,7 @@ export function HeroComposition() {
         })}
       </div>
 
-      {/* Mobile: one focused card + tap targets for the other two */}
+      {/* Mobile: one focused card + tap targets */}
       <div className="sm:hidden">
         {(() => {
           const focused =
